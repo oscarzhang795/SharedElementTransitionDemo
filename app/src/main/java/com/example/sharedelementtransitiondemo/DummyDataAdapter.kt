@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 
-class DummyDataAdapter : RecyclerView.Adapter<DummyDataAdapter.MyViewHolder>() {
+class DummyDataAdapter(var onClick: (ImageView) -> Unit) : RecyclerView.Adapter<DummyDataAdapter.MyViewHolder>() {
 
     class MyViewHolder(var imageView: ImageView) : RecyclerView.ViewHolder(imageView)
 
@@ -16,22 +16,13 @@ class DummyDataAdapter : RecyclerView.Adapter<DummyDataAdapter.MyViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return 4
+        return 3
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, p1: Int) {
+        holder.imageView.transitionName = "image_scale $p1"
         holder.imageView.setOnClickListener {
-            val fragment = FragmentB()
-            fragment.sharedElementEnterTransition = TransitionInflater.from(holder.itemView.context).inflateTransition(R.transition.transition_image_enlarge)
-            fragment.enterTransition = TransitionInflater.from(holder.itemView.context).inflateTransition(R.transition.transition_image_enlarge)
-//            fragment.sharedElementEnterTransition = TransitionInflater.from(holder.itemView.context).inflateTransition(android.R.transition.slide_bottom)
-//            fragment.sharedElementReturnTransition = TransitionInflater.from(holder.itemView.context).inflateTransition(android.R.transition.explode)
-            (holder.itemView.context as MainActivity).supportFragmentManager
-                    .beginTransaction()
-                    .addSharedElement(holder.imageView, holder.imageView.transitionName)
-                    .replace(R.id.container, fragment, "Tag")
-                    .addToBackStack("Tag")
-                    .commit()
+            onClick(holder.imageView)
         }
     }
 
